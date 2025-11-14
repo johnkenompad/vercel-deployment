@@ -1,5 +1,6 @@
 import admin from 'firebase-admin';
 import { getApps } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -21,4 +22,7 @@ if (!getApps().length) {
   });
 }
 
+const db = getFirestore();
+
 export const adminAuth = admin.auth();
+export { db };
