@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import admin from 'firebase-admin';
-import serviceAccount from './serviceAccountKey.json' with { type: 'json' };
+import { readFile } from 'fs/promises';
 
 // 🧩 Import Routes (use full .js extension for ES Modules)
 import quizRoutes from './routes/quizRoutes.js';
@@ -18,9 +18,25 @@ dotenv.config();
 
 // ✅ Initialize Firebase Admin SDK (only if not already initialized)
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  try {
+    let serviceAccount;
+    
+    // Check if FIREBASE_SERVICE_ACCOUNT env variable exists (for Vercel)
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } else {
+      // Use local file for development
+      const serviceAccountFile = await readFile('./serviceAccountKey.json', 'utf8');
+      serviceAccount = JSON.parse(serviceAccountFile);
+    }
+    
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+    console.log('✅ Firebase Admin initialized');
+  } catch (error) {
+    console.error('❌ Firebase initialization error:', error);
+  }
 }
 
 // ✅ Setup Express App
