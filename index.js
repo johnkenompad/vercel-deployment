@@ -1,8 +1,16 @@
-// ✅ QuizRush Backend - CommonJS Version
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const admin = require('firebase-admin');
+// ✅ QuizRush Backend - ES Module Version
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import admin from 'firebase-admin';
+
+// ✅ Import API Routes
+import quizRoutes from './routes/quizRoutes.js';
+import crosswordRoutes from './routes/crosswordRoutes.js';
+import wordsearchRoutes from './routes/wordsearchRoutes.js';
+import dailyTriviaRoutes from './routes/dailyTriviaRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import extractText from './routes/extractText.js';
 
 // ✅ Load .env config
 dotenv.config();
@@ -48,22 +56,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Import API Routes - Note: Routes will be loaded only if they exist
-// Commenting out routes temporarily until we convert them to CommonJS
-// const quizRoutes = require('./routes/quizRoutes');
-// const crosswordRoutes = require('./routes/crosswordRoutes');
-// const wordsearchRoutes = require('./routes/wordsearchRoutes');
-// const dailyTriviaRoutes = require('./routes/dailyTriviaRoutes');
-// const adminRoutes = require('./routes/adminRoutes');
-// const extractText = require('./routes/extractText');
-
 // ✅ Use API Routes
-// app.use('/api/quiz', quizRoutes);
-// app.use('/api/crossword', crosswordRoutes);
-// app.use('/api/wordsearch', wordsearchRoutes);
-// app.use('/api/daily-trivia', dailyTriviaRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/extract-text', extractText);
+app.use('/api/quiz', quizRoutes);
+app.use('/api/crossword', crosswordRoutes);
+app.use('/api/wordsearch', wordsearchRoutes);
+app.use('/api/daily-trivia', dailyTriviaRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/extract-text', extractText);
 
 // ✅ Basic routes
 app.get('/', (req, res) => {
@@ -95,4 +94,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ✅ Export for Vercel
-module.exports = app;
+export default app;
