@@ -54,5 +54,7 @@ app.post('/api/test', (req, res) => {
   res.json({ success: true, message: 'API is working!', body: req.body });
 });
 
-// ✅ Export for Vercel (must handle the request/response directly)
-export default app;
+// ✅ Export handler function for Vercel
+export default (req, res) => {
+  return app(req, res);
+};
