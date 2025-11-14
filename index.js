@@ -31,8 +31,20 @@ if (!admin.apps.length) {
 // ✅ Setup Express App
 const app = express();
 
-// ✅ Global Middleware
-app.use(cors());
+// ✅ Global Middleware - CORS Configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://frontend-h8a8hdwih-john-ken-ompads-projects.vercel.app',
+    /\.vercel\.app$/ // Allow all Vercel preview deployments
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
