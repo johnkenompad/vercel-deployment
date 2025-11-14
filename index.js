@@ -48,6 +48,22 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Import API Routes
+const quizRoutes = require('./routes/quizRoutes');
+const crosswordRoutes = require('./routes/crosswordRoutes');
+const wordsearchRoutes = require('./routes/wordsearchRoutes');
+const dailyTriviaRoutes = require('./routes/dailyTriviaRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const extractText = require('./routes/extractText');
+
+// ✅ Use API Routes
+app.use('/api/quiz', quizRoutes);
+app.use('/api/crossword', crosswordRoutes);
+app.use('/api/wordsearch', wordsearchRoutes);
+app.use('/api/daily-trivia', dailyTriviaRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/extract-text', extractText);
+
 // ✅ Basic routes
 app.get('/', (req, res) => {
   res.json({ 
