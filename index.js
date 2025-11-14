@@ -1,10 +1,32 @@
-// ✅ ES Module Version of index.js (QuizRush Backend)
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+// ✅ QuizRush Backend - CommonJS Version
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const admin = require('firebase-admin');
 
 // ✅ Load .env config
 dotenv.config();
+
+// ✅ Initialize Firebase Admin SDK (only if not already initialized)
+if (!admin.apps.length) {
+  try {
+    let serviceAccount;
+    
+    // Check if FIREBASE_SERVICE_ACCOUNT env variable exists (for Vercel)
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+      
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+      });
+      console.log('✅ Firebase Admin initialized');
+    } else {
+      console.warn('⚠️ FIREBASE_SERVICE_ACCOUNT not found');
+    }
+  } catch (error) {
+    console.error('❌ Firebase initialization error:', error);
+  }
+}
 
 // ✅ Setup Express App
 const app = express();
@@ -14,11 +36,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Basic test route
+// ✅ Basic routes
 app.get('/', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'QuizRush Backend is running!',
+    firebaseInitialized: admin.apps.length > 0,
     timestamp: new Date().toISOString()
   });
 });
@@ -43,4 +66,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ✅ Export for Vercel
-export default app;
+module.exports = app;

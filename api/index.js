@@ -1,7 +1,3 @@
-module.exports = function handler(req, res) {
-  res.status(200).json({
-    status: 'OK',
-    message: 'Backend is working!',
-    timestamp: new Date().toISOString()
-  });
-};
+const app = require('../index.js');
+
+module.exports = app;
