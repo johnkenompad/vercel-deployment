@@ -45,6 +45,7 @@ const corsOptions = {
     'http://localhost:3000',
     'http://localhost:5173',
     'https://frontend-h8a8hdwih-john-ken-ompads-projects.vercel.app',
+    'https://frontend-k0i8mr2ls-john-ken-ompads-projects.vercel.app',
     /\.vercel\.app$/ // Allow all Vercel preview deployments
   ],
   credentials: true,
