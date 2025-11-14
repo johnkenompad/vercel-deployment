@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import admin from 'firebase-admin';
-import { readFile } from 'fs/promises';
 
 // 🧩 Import Routes (use full .js extension for ES Modules)
 import quizRoutes from './routes/quizRoutes.js';
@@ -26,7 +25,8 @@ if (!admin.apps.length) {
       serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     } else {
       // Use local file for development
-      const serviceAccountFile = await readFile('./serviceAccountKey.json', 'utf8');
+      const fs = await import('fs/promises');
+      const serviceAccountFile = await fs.readFile('./serviceAccountKey.json', 'utf8');
       serviceAccount = JSON.parse(serviceAccountFile);
     }
     
@@ -71,14 +71,19 @@ app.delete('/api/admin/delete-user/:uid', async (req, res) => {
   }
 });
 
-// ✅ Server Startup
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log(`🧪 Test GET/POST:       http://localhost:${PORT}/api/test`);
-  console.log(`🧠 Quiz Generator:      http://localhost:${PORT}/api/generate-custom-quiz`);
-  console.log(`📁 OCR Upload:          http://localhost:${PORT}/api/extract-text`);
-  console.log(`🧩 Crossword Generator: http://localhost:${PORT}/api/generate-crossword-clues`);
-  console.log(`🔤 Word Search:         http://localhost:${PORT}/api/generate-wordsearch`);
-  console.log(`🧠 Daily Trivia:         http://localhost:${PORT}/api/daily-trivia/generate`);
-});
+// ✅ Server Startup (only for local development)
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`✅ Server running at http://localhost:${PORT}`);
+    console.log(`🧪 Test GET/POST:       http://localhost:${PORT}/api/test`);
+    console.log(`🧠 Quiz Generator:      http://localhost:${PORT}/api/generate-custom-quiz`);
+    console.log(`📁 OCR Upload:          http://localhost:${PORT}/api/extract-text`);
+    console.log(`🧩 Crossword Generator: http://localhost:${PORT}/api/generate-crossword-clues`);
+    console.log(`🔤 Word Search:         http://localhost:${PORT}/api/generate-wordsearch`);
+    console.log(`🧠 Daily Trivia:         http://localhost:${PORT}/api/daily-trivia/generate`);
+  });
+}
+
+// ✅ Export for Vercel
+export default app;
